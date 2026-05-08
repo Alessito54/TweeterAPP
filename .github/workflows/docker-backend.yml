@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Normalize GHCR owner
+        run: echo "GHCR_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -36,5 +39,5 @@ jobs:
           file: ./tweeter-api/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-api:latest
-            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-api:${{ github.sha }}
+            ghcr.io/${{ env.GHCR_OWNER }}/tweeter-api:latest
+            ghcr.io/${{ env.GHCR_OWNER }}/tweeter-api:${{ github.sha }}

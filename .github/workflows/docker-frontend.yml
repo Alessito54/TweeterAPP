@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Normalize GHCR owner
+        run: echo "GHCR_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -38,5 +41,5 @@ jobs:
           build-args: |
             API_BASE_URL=${{ secrets.API_BASE_URL || 'https://tweeter-v1-0-0.onrender.com/api' }}
           tags: |
-            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-web:latest
-            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-web:${{ github.sha }}
+            ghcr.io/${{ env.GHCR_OWNER }}/tweeter-web:latest
+            ghcr.io/${{ env.GHCR_OWNER }}/tweeter-web:${{ github.sha }}
