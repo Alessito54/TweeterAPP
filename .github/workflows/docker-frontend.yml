@@ -38,5 +38,5 @@ jobs:
           build-args: |
             API_BASE_URL=${{ secrets.API_BASE_URL || 'https://tweeter-v1-0-0.onrender.com/api' }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/tweeter-web:latest
-            ghcr.io/${{ github.repository_owner }}/tweeter-web:${{ github.sha }}
+            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-web:latest
+            ghcr.io/${{ toLower(github.repository_owner) }}/tweeter-web:${{ github.sha }}
