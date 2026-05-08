@@ -1,0 +1,177 @@
+# ===================================
+# GUÍA DE CONFIGURACIÓN RÁPIDA
+# ===================================
+
+## PASO 1: BACKEND SPRING BOOT
+
+### 1.1 Configurar Base de Datos (Aiven)
+1. Ir a https://aiven.io y crear cuenta
+2. Crear servicio PostgreSQL 17
+3. Copiar la URI y actualizar:
+   - tweeter-api/src/main/resources/application.properties
+   - Reemplazar: <HOST_DE_AIVEN>, <PUERTO>, <TU_CONTRASEÑA>
+
+### 1.2 Compilar Backend
+```bash
+cd tweeter-api
+mvn clean package
+```
+
+### 1.3 Probar Localmente (Opcional)
+```bash
+java -jar target/tweeter-api-0.0.1-SNAPSHOT.jar
+# Debería estar en http://localhost:8080
+```
+
+---
+
+## PASO 2: DOCKERIZACIÓN
+
+### 2.1 Construir Imagen Docker
+```bash
+cd tweeter-api
+docker build -t TU-USUARIO-DOCKERHUB/tweeter-api:latest .
+```
+
+### 2.2 Subir a Docker Hub
+```bash
+docker login
+docker push TU-USUARIO-DOCKERHUB/tweeter-api:latest
+```
+
+---
+
+## PASO 3: DEPLOY EN RENDER
+
+### 3.1 Crear Web Service
+1. Ir a https://render.com
+2. Dashboard → New Web Service
+3. Seleccionar "Deploy from container image"
+4. Pegar imagen: `TU-USUARIO-DOCKERHUB/tweeter-api:latest`
+
+### 3.2 Variables de Ambiente
+En Render, añadir:
+```
+SPRING_DATASOURCE_URL=jdbc:postgresql://HOST-AIVEN:PUERTO/defaultdb?sslmode=require
+SPRING_DATASOURCE_USERNAME=avnadmin
+SPRING_DATASOURCE_PASSWORD=TU_CONTRASEÑA
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+```
+
+### 3.3 Copiar URL Pública
+Una vez depliegue (5-10 min), copiar URL pública:
+```
+https://tweeter-api-xxxxx.render.com
+```
+
+---
+
+## PASO 4: CLIENTE FLUTTER
+
+### 4.1 Descargar Dependencias
+```bash
+cd flutter_client
+flutter pub get
+```
+
+### 4.2 Actualizar API URL
+En `lib/screens/home_screen.dart`, línea ~25:
+```dart
+_tweetService = TweetService(
+  customBaseUrl: 'https://tweeter-api-xxxxx.render.com/api',
+);
+```
+
+### 4.3 Ejecutar App
+```bash
+flutter run
+```
+
+---
+
+## ENDPOINTS PRINCIPALES
+
+### POST - Crear Tweet
+```bash
+curl -X POST https://tweeter-api-xxxxx.render.com/api/tweets \
+  -H "Content-Type: application/json" \
+  -d '{"tweet":"Hola mundo!"}'
+```
+
+### GET - Listar Tweets
+```bash
+curl https://tweeter-api-xxxxx.render.com/api/tweets?page=0&size=10
+```
+
+### DELETE - Eliminar Tweet
+```bash
+curl -X DELETE https://tweeter-api-xxxxx.render.com/api/tweets/1
+```
+
+---
+
+## TROUBLESHOOTING
+
+❌ **"Connection refused"**
+→ Verificar que Spring Boot esté corriendo o desplegado en Render
+
+❌ **"SSL certificate error"**
+→ En development: cambiar `https://` a `http://`
+
+❌ **"Tweets no cargan en Flutter"**
+→ Revisar: `flutter logs`
+→ Verificar URL de API correcta
+
+❌ **Base de datos no conecta**
+→ Copiar credenciales exactas desde Aiven
+→ Verificar que `?sslmode=require` esté en URL
+
+---
+
+## ESTRUCTURA FINAL
+
+```
+twteer/
+├── README.md                           # Este archivo
+├── QUICK_START.txt                    # Guía rápida
+├── tweeter-api/                       # Backend Spring Boot
+│   ├── pom.xml
+│   ├── Dockerfile
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/tweeter/
+│       │   │   ├── TweeterApiApplication.java
+│       │   │   ├── controllers/TweetController.java
+│       │   │   ├── models/Tweet.java
+│       │   │   └── repositories/TweetRepository.java
+│       │   └── resources/application.properties
+│       └── test/
+└── flutter_client/                    # Cliente Flutter
+    ├── pubspec.yaml
+    ├── lib/
+    │   ├── main.dart
+    │   ├── screens/home_screen.dart
+    │   ├── services/tweet_service.dart
+    │   └── models/tweet.dart
+    └── android/
+        └── app/AndroidManifest.xml
+```
+
+---
+
+## CHECKLIST FINAL
+
+- [ ] Base de datos configurada en Aiven
+- [ ] Backend compilado con `mvn clean package`
+- [ ] Docker image creada y subida a Docker Hub
+- [ ] App desplegada en Render.com
+- [ ] URL pública copiada
+- [ ] Flutter app actualizada con URL de API
+- [ ] App Flutter compilada y ejecutada
+- [ ] Puedo crear tweets desde Flutter
+- [ ] Puedo ver tweets en la lista
+- [ ] Puedo eliminar tweets
+
+---
+
+¡Si completaste todo esto, ¡Felicidades! Tu app Tweeter está en producción 🚀

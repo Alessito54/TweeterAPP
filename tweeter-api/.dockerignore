@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+.DS_Store
+
+# Maven
+target/
+.m2/
+
+# Environment
+.env
+.env.local
+
+# Build artifacts
+*.log
+*.jar
+*.class
+
+# Documentation
+README.md
+docs/
+
+# Tests (opcional - comentar si quieres que se ejecuten tests en el build)
+src/test/

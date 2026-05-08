@@ -1,0 +1,31 @@
+# Java
+**/target/
+*.class
+*.log
+
+# Maven
+**/dependency-reduced-pom.xml
+
+# IntelliJ / IDE
+**/.idea/
+**/*.iml
+
+# VS Code
+**/.vscode/
+
+# Flutter / Dart
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/build/
+**/pubspec.lock
+
+# Android
+**/local.properties
+**/gradle.properties
+**/.gradle/
+
+# OS
+.DS_Store
+Thumbs.db
