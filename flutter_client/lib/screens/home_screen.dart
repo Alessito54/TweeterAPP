@@ -23,8 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // Instanciar el servicio Singleton - solo una instancia en toda la app
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
     final baseUrl = kIsWeb
-        ? 'http://localhost:8080/api'
+        ? (apiBaseUrl.isNotEmpty ? apiBaseUrl : 'http://localhost:8080/api')
         : 'http://10.0.2.2:8080/api';
     _tweetService = TweetService(
       // Reemplazar con la URL de Render cuando esté desplegado
